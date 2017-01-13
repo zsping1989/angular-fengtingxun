@@ -1,14 +1,17 @@
 {
-  "name": "angular-extend",
-  "version": "1.0.0",
+  "name": "angular-fengtingxun",
+  "version": "0.0.1",
+  "authors": [
+    "zhangshiping(张世平)<214986304@qq.com>"
+  ],
   "license": "MIT",
-  "main": "src/angular-extend.js",
+  "main": "src/angular-fengtingxun.js",
   "ignore": [],
   "dependencies": {
     "angular": "^1.3.0"
   },
   "keywords": [
-    "Angular","zsping1989","angular-extend","多级联动","三级联动","省,市,区","树状结构"
+    "Angular","zsping1989","angular-fengtingxun","多级联动","三级联动","省,市,区","树状结构"
   ],
-  "homepage": "http://www.zsping1989.com"
+  "homepage": "http://www.zsping1989.com/angular-fengtingxun"
 }

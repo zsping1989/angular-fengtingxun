@@ -119,7 +119,6 @@
 <head>
     <meta charset="UTF-8">
     <title>angular学习</title>
-    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 </head>
 <body>
 <!-- 引入angluar -->
@@ -213,7 +212,7 @@
 </head>
 <body  >
 <script src="bower_components/angular/angular.min.js"></script>
-<script src="bower_components/angular-extend/src/angular-fengtingxun.js"></script>
+<script src="bower_components/angular-fengtingxun/src/angular-fengtingxun.js"></script>
 <div ng-app="app">
     <div ng-controller="myCtrl">
         <div ftx-multilevel-move='data1' ng-model="area1" ftx-multilevel-move-config="config1" ></div>
@@ -307,7 +306,7 @@
 <!-- 引入angluar -->
 <script src="bower_components/angular/angular.min.js"></script>
 <!-- 引入扩展库 -->
-<script src="bower_components/angular-extend/src/angular-fengtingxun.js"></script>
+<script src="bower_components/angular-fengtingxun/src/angular-fengtingxun.js"></script>
 
 <!-- 创建应用 -->
 <div ng-app="app">
@@ -395,7 +394,7 @@
 </head>
 <body  >
 <script src="bower_components/angular/angular.min.js"></script>
-<script src="bower_components/angular-extend/src/angular-fengtingxun.js"></script>
+<script src="bower_components/angular-fengtingxun/src/angular-fengtingxun.js"></script>
 <div ng-app="app">
     <div ng-controller="myCtrl">
         <div ftx-multilevel-move='data1' ng-model="area1" ftx-multilevel-move-config="config1" ></div>
