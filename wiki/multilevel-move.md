@@ -204,7 +204,6 @@
 <head>
     <meta charset="UTF-8">
     <title>angular学习</title>
-    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 </head>
 <body  >
 <script src="bower_components/angular/angular.min.js"></script>

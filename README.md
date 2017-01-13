@@ -14,9 +14,9 @@
 
 ## 安装
 
-### 一.模块化安装
+### 安装方式一:模块化安装
 
-1. 先下载安装nodejs [https://nodejs.org/en/](https://nodejs.org/en/)
+1. 先下载安装nodejs [ https://nodejs.org/en/](https://nodejs.org/en/)
 
 2. 进入nodejs安装目录点击右键bash打开
 
@@ -38,6 +38,21 @@ $ bower install fengtingxun
 
 ```
 
+### 安装方式二:直接源码下载
+
+1.依赖库Angular下载[ https://github.com/angular/angular](https://github.com/angular/angular.js.git)
+
+2.扩展库Angular-Fengtingxun下载[ https://github.com/zsping1989/angular-fengtingxun](https://github.com/zsping1989/angular-fengtingxun.git)
+
+3.js引入
+
+```
+<!-- 引入angluar -->
+<script src="bower_components/angular/angular.min.js"></script>
+<!-- 引入扩展库 -->
+<script src="bower_components/angular-extend/src/angular-fengtingxun.js"></script>
+
+```
 
 ## ngFengTingXun扩展功能
 
