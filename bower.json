@@ -1,0 +1,14 @@
+{
+  "name": "angular-extend",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "src/angular-extend.js",
+  "ignore": [],
+  "dependencies": {
+    "angular": "^1.3.0"
+  },
+  "keywords": [
+    "Angular","zsping1989","angular-extend","多级联动","三级联动","省,市,区","树状结构"
+  ],
+  "homepage": "http://www.zsping1989.com"
+}

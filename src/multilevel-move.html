@@ -1,0 +1,7 @@
+<span ng-repeat="(key,value) in seleceLength">
+    <label>{{config['label'][key]}}</label>
+    <select name="{{config['element_name'] ? config['element_name']+'[]' : ''}}"  ng-model="area[key]" ng-change="change(area[key],key)" >
+        <option ng-if="config['empty'] !==false" value="">{{config['empty'][key] || '请选择'}}</option>
+        <option ng-repeat="x in value" value="{{x[config['value']]}}">{{x[config['show']]}}</option>
+    </select>
+</span>
