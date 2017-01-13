@@ -41,10 +41,6 @@
 |   selected | 布尔值(bool)| 否(no) | false:(默认值-default)|  是否默认选中select中的第一个值|
 |   empty | 数组或false(bool)| 否(no) | [false]:(默认值-default)|  为空时的默认选项值|
 
-
-## ftx-multilevel-move
-
-
 ### 一. 树状结构数据
 
 #### 1. JavaScript部分

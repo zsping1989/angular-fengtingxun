@@ -1,6 +1,6 @@
 {
   "name": "angular-fengtingxun",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "authors": [
     "zhangshiping(张世平)<214986304@qq.com>"
   ],
@@ -13,5 +13,5 @@
   "keywords": [
     "Angular","zsping1989","angular-fengtingxun","多级联动","三级联动","省,市,区","树状结构"
   ],
-  "homepage": "http://www.zsping1989.com/angular-fengtingxun"
+  "homepage": "https://github.com/zsping1989/angular-fengtingxun"
 }
