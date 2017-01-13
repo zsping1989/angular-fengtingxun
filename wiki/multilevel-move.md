@@ -1,6 +1,9 @@
 
 ## ftx-multilevel-move
 
+### 功能效果
+![多级联动](./imgs/multilevel-move.gif)
+
 
 **扩展库下载:**
 
