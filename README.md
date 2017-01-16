@@ -56,5 +56,5 @@ $ bower install fengtingxun
 
 ## ngFengTingXun扩展功能
 
-1.-[多级联动(省-市-区)](./wiki/multilevel-move.md)
+1.-[多级联动(省-市-区)](./wiki/directives/multilevel-move.md)
 
