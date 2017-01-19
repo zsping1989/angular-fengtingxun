@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angular学习</title>
+    <link rel="stylesheet" href="../../../bootstrap/dist/css/bootstrap.css">
+</head>
+<body  >
+<script src="../../../angular/angular.min.js"></script>
+<script src="../../dist/angular-fengtingxun.js"></script>
+<script>
+    /* 调试打印 */
+    function dump(){
+        for (var i = 0; i < arguments.length; ++i) {
+            console.log(arguments[i]);
+        }
+    }
+
+    //创建应用
+    var app = angular.module('app',['ngFengTingXun']);
+
+    //创建控制器
+    app.controller('myCtrl',function($scope){
+        $scope.config = {};
+        //联动数据绑定
+        $scope.datas = {
+            "total": 3247,
+            "per_page": 15,
+            "current_page": 1,
+            "last_page": 217,
+            "next_page_url": "http://www.laravels.com/admin/area/index?page=2",
+            "prev_page_url": null,
+            "from": 1,
+            "to": 15,
+            "data": [
+                {
+                    "id": 1,
+                    "name": "全球",
+                    "status": 2,
+                    "parent_id": 0,
+                    "level": 0,
+                    "left_margin": 1,
+                    "right_margin": 6506,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 2,
+                    "name": "中国",
+                    "status": 1,
+                    "parent_id": 1,
+                    "level": 1,
+                    "left_margin": 2,
+                    "right_margin": 6493,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 3,
+                    "name": "北京市",
+                    "status": 1,
+                    "parent_id": 2,
+                    "level": 2,
+                    "left_margin": 3,
+                    "right_margin": 44,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 4,
+                    "name": "市辖区",
+                    "status": 1,
+                    "parent_id": 3,
+                    "level": 3,
+                    "left_margin": 4,
+                    "right_margin": 37,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 5,
+                    "name": "东城区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 5,
+                    "right_margin": 6,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 6,
+                    "name": "西城区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 7,
+                    "right_margin": 8,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 7,
+                    "name": "崇文区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 9,
+                    "right_margin": 10,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 8,
+                    "name": "宣武区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 11,
+                    "right_margin": 12,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 9,
+                    "name": "朝阳区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 13,
+                    "right_margin": 14,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 10,
+                    "name": "丰台区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 15,
+                    "right_margin": 16,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 11,
+                    "name": "石景山区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 17,
+                    "right_margin": 18,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 12,
+                    "name": "海淀区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 19,
+                    "right_margin": 20,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 13,
+                    "name": "门头沟区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 21,
+                    "right_margin": 22,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 14,
+                    "name": "房山区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 23,
+                    "right_margin": 24,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                },
+                {
+                    "id": 15,
+                    "name": "通州区",
+                    "status": 1,
+                    "parent_id": 4,
+                    "level": 4,
+                    "left_margin": 25,
+                    "right_margin": 26,
+                    "created_at": "2016-05-10 16:00:00",
+                    "updated_at": "2016-05-10 16:00:00"
+                }
+            ],
+            "order": [],
+            "where": []
+        };
+        $scope.change = function(){
+            $scope.datas = {
+                "total": 3247,
+                "per_page": 15,
+                "current_page": 2,
+                "last_page": 217,
+                "next_page_url": "http://www.laravels.com/admin/area/index?page=2",
+                "prev_page_url": null,
+                "from": 1,
+                "to": 15,
+                "order": [],
+                "where": []
+            };
+        };
+    });
+
+</script>
+<div ng-app="app">
+    <div ng-controller="myCtrl">
+        <div class="row">
+            <div class="col-lg-12">
+                <div ftx-paginate='datas' ftx-paginate-config="config"></div>
+                <button type="button" ng-click="change()">改变数据</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

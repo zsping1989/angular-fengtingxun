@@ -197,7 +197,7 @@
     }];
 
     //应用模块创建
-    var app =  angular.module(fengtingxun.getTrueModule(MODULE_NAME,fengtingxun.config.moduleName),[]);
+    var app =  angular.module(fengtingxun.getTrueModule('directive.'+MODULE_NAME,fengtingxun.config.moduleName),[]);
 
     /**
      * 注册自定义命令

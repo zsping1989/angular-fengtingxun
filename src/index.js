@@ -8,7 +8,8 @@
 
     //应用模块创建
     var app =  angular.module(MODULE_NAME,fengtingxun.getTrueModules([
-        'multilevelMove'
+        'directive.multilevelMove', //多级联动
+        'directive.paginate' //分页
     ]));
 
 })(window,window.angular);
