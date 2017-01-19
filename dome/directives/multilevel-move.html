@@ -115,7 +115,7 @@
             show : "name", //多级联动显示字段
             value : "id", //多级联动显示值
             selected:true, //是否默认选中第一个值
-            label : ['省','市','区'], //每一个下拉菜单的左侧说明
+            //label : ['省','市','区'], //每一个下拉菜单的左侧说明
             empty : false,//['请选择省','请选择市','请选择县'], //当没有选择值时的提示
             childrens_key : 'childrens', //子节点字段键
             element_name : 'area', //表单节点名称
@@ -123,13 +123,48 @@
             primary_key : 'id', //主键
             parent_key : 'parent_id' //父级字段
         };
+        $scope.change = function(){
+            $scope.data= [
+                {
+                    "id":2,
+                    "name":'四川',
+                    "parent_id":1,
+                    "childrens":[
+                        {
+                            "id":4,
+                            "name":'成都',
+                            "parent_id":2
+                        },
+                        {
+                            "id":5,
+                            "name":'资阳',
+                            "parent_id":2
+                        }
+                    ]
+                },
+                {
+                    "id":3,
+                    "name":'湖南',
+                    "parent_id":1
+                }
+            ];
+        };
     });
 
 </script>
 <div ng-app="app">
     <div ng-controller="myCtrl">
         <div ftx-multilevel-move='data' ng-model="area" ftx-multilevel-move-config="config" ></div>
+        <br>
+        数据源:{{data}}
+        <br>
+        选中数据:{{area}}
+        <button type="button" ng-click="change()">改变数据源</button>
+        <br><br>
         <div ftx-multilevel-move='data1' ng-model="area1" ftx-multilevel-move-config="config1" ></div>
+        <br>
+        选中数据:{{area1}}
+
     </div>
 </div>
 

@@ -1,55 +1,108 @@
 /**
+ * Created by zhangshiping on 2017/1/18.
+ */
+/**
+ * 框架配置
+ * @type {{config: {moduleName: string, directivePrefix: string}}}
+ */
+
+var fengtingxun = {
+    config: {
+        moduleName: 'FengTingXun', //模块名称
+        directivePrefix: 'ftx' //指令前缀
+    }
+};
+
+/**
+ * 获取模块名称
+ * @param name
+ * @param prefix
+ * @returns {string}
+ */
+fengtingxun.getTrueModule = function (name, prefix) {
+    prefix = prefix.replace(/(\w)/,function(v){return v.toUpperCase()}) || 'FengTingXun';
+    return name ? 'ng' + prefix + '.' + name : 'ng' + prefix;
+};
+
+/**
+ *
+ * @param modules
+ * @returns {Array}
+ */
+fengtingxun.getTrueModules = function (modules) {
+    var result = [];
+    for (var i in modules) {
+        result[i] = fengtingxun.getTrueModule(modules[i], fengtingxun.config.moduleName);
+    }
+    return result;
+};
+
+/**
+ *
+ * @param old_config
+ * @param config
+ * @returns {*}
+ */
+fengtingxun.overCinfig = function (old_config, config) {
+    var result = {};
+    if (!config) {
+        return old_config;
+    }
+    for (var i in old_config) {
+        if (typeof config[i] != 'undefined') {
+            result[i] = config[i];
+        } else {
+            result[i] = old_config[i];
+        }
+    }
+    return result;
+};
+
+/**
+ * 命令名称获取
+ * @param name
+ * @returns {*}
+ */
+fengtingxun.getDirectiveName = function(name){
+    var directivePrefix = fengtingxun['config']['directivePrefix'] || 'ftx';
+    return directivePrefix+name.replace(/(\w)/,function(v){return v.toUpperCase()});
+};
+
+/**
+ * 获取带有前缀的指令
+ * @param directives
+ * @returns {{}}
+ */
+fengtingxun.getTrueDirectives = function(directives){
+    var result = {};
+    for(var key in directives){
+        result[fengtingxun.getDirectiveName(key)] = directives[key];
+    }
+    return result;
+};
+/**
+ * 所有模块注入
  * Created by zhangshiping on 2017/1/8.
  */
 (function(window,angular){'use strict';
     //定义模块名称
-    var MODULE_NAME = 'FengTingXun';
+    var MODULE_NAME = fengtingxun.getTrueModule('',fengtingxun.config.moduleName);
 
-    //定义指令前缀
-    var DIRECTIVE_PREFIX = 'ftx';
+    //应用模块创建
+    var app =  angular.module(MODULE_NAME,fengtingxun.getTrueModules([
+        'multilevelMove'
+    ]));
+
+})(window,window.angular);
+/**
+ * Created by zhangshiping on 2017/1/8.
+ */
+(function(window,angular){'use strict';
+    //定义模块名称
+    var MODULE_NAME = 'multilevelMove';
 
     //所有定义指令
     var directive = {};
-
-    /**
-     * 命令拼接前缀
-     * @param obj
-     * @returns {{}}
-     */
-    var prefixKey = function(key){
-        return DIRECTIVE_PREFIX+key.replace(/(\w)/,function(v){return v.toUpperCase()});
-    };
-
-    /**
-     * 配置覆盖
-     */
-    var overCinfig = function(old_config,config){
-        var result = {};
-        if(!config){
-            return old_config;
-        }
-        for (var i in old_config){
-            if(typeof config[i] != 'undefined'){
-                result[i] = config[i];
-            }else {
-                result[i] = old_config[i];
-            }
-        }
-        return result;
-    };
-
-    /**
-     * 命令拼接前缀
-     * @param obj
-     * @returns {{}}
-     */
-    var prefixObj = function(obj){
-        var result = {};
-        for(var key in obj){
-            result[prefixKey(key)] = obj[key];
-        }
-        return result;
-    };
 
     /**
      * 多级联动
@@ -70,6 +123,12 @@
             parent_key : 'parent_id', //父级字段
             selected : false //是否默认选中第一个值
         };
+
+        //数据获取KEY
+        var dataKey = fengtingxun.getDirectiveName('multilevelMove');
+
+        //配置数据获取KEY
+        var configKey = fengtingxun.getDirectiveName('multilevelMoveConfig');
 
         /**
          * 将数据某一列作key
@@ -118,7 +177,7 @@
                 }
             }
             return r;
-        }
+        };
 
         var treeFirst = function(datas,value_key,chindrens_key,result){
             //定义结果
@@ -141,31 +200,67 @@
 
         return {
             restrict: 'A', //属性
-            //templateUrl : 'bower_components/angular-fengtingxun/src/multilevel-move.html',
-            template:'<span ng-repeat="(key,value) in seleceLength">'+
-                   '    <label>{{config[\'label\'][key]}}</label>'+
-                   '    <select name="{{config[\'element_name\'] ? config[\'element_name\']+\'[]\' : \'\'}}" ng-model="area[key]" ng-change="change(area[key],key)" >'+
-                   '        <option ng-if="config[\'empty\'] !==false" value="">{{config[\'empty\'][key] || \'请选择\'}}</option>'+
-                   '        <option ng-repeat="x in value" value="{{x[config[\'value\']]}}">{{x[config[\'show\']]}}</option>'+
-                   '    </select>'+
-                   '</span>',
+            //templateUrl : '/bower_components/angular-fengtingxun/src/directives/multilevel-move.html',
+            scope:{data:'='+dataKey,config:'='+configKey,area:'=ngModel'},
+            template:'<div>'+
+                       '<span ng-repeat="(key,value) in seleceLength">'+
+                       '    <label>{{main_config[\'label\'][key]}}</label>'+
+                       '    <select name="{{main_config[\'element_name\'] ? main_config[\'element_name\']+\'[]\' : \'\'}}" ng-model="area[key]" ng-change="change(area[key],key)" >'+
+                       '        <option ng-if="main_config[\'empty\'] !==false" value="">{{main_config[\'empty\'][key] || \'请选择\'}}</option>'+
+                       '        <option ng-repeat="x in value" value="{{x[main_config[\'value\']]}}">{{x[main_config[\'show\']]}}</option>'+
+                       '    </select>'+
+                       '</span>' +
+                    '</div>',
+            replace:true,
             link: function (scope,element, attr) {
-                //用户自定义配置
-                var main_config = scope.$eval(attr[prefixKey('MultilevelMoveConfig')]);
                 //现在使用配置
-                scope.config = overCinfig(config,main_config);
+                scope.main_config = fengtingxun.overCinfig(config,scope.config);
 
                 //不需要未选择提示时,将设置为自动选择第一个值
-                if(scope.config['empty']===false){
-                    scope.config['selected'] = true;
+                if(scope.main_config['empty']===false){
+                    scope.main_config['selected'] = true;
                 }
 
                 //选中值
-                scope.area = typeof scope.$eval(attr['ngModel']) == "object" ? scope.$eval(attr['ngModel']) : [];
+                scope.area = typeof scope.area == "object" ? scope.area : [];
 
                 for (var i in scope.area){
                     scope.area[i] = scope.area[i]+''; //类型转换
                 }
+
+                //监听数据源改变
+                scope.$watch('data', function (value) {
+
+                    //获取数据
+                    var datas = angular.copy(value);
+
+                    //非树状结构转换树状结构
+                    if(scope.main_config['margin_tree']){
+                        datas = toTree(datas,scope.main_config['primary_key'],scope.main_config['parent_key'], scope.main_config['childrens_key']);
+                    }
+
+                    //将主键设置成key标记
+                    scope.datas =  keyBy(datas,scope.main_config['value'],scope.main_config['childrens_key']);
+
+                    //默认选中第一个
+                    if(scope.main_config['selected'] && !scope.area.length){
+                        scope.area = treeFirst(scope.datas,scope.main_config['value'],scope.main_config['childrens_key']);
+                    }
+
+                    //默认显示第一级
+                    scope.seleceLength = [scope.datas];
+                    //循环显示后面层级
+                    for (var i=0;i<scope.area.length;i++){
+                        if(typeof scope.seleceLength[i]=='undefined' || typeof scope.seleceLength[i]['id_'+scope.area[i]]=='undefined'){
+                            scope.seleceLength.splice(i,scope.seleceLength.length-i);
+                            scope.area.splice(i,scope.area.length-i);
+                            break;
+                        }
+                        if(typeof scope.seleceLength[i]['id_'+scope.area[i]][scope.main_config['childrens_key']]!='undefined'){
+                            scope.seleceLength[i+1] = scope.seleceLength[i]['id_'+scope.area[i]][scope.main_config['childrens_key']];
+                        }
+                    }
+                });
 
                 /**
                  * 改变值方法
@@ -175,22 +270,17 @@
                 scope.change = function(value,select_index){
 
                     //数据源
-                    var datas = scope.datas;
-
-                    //当前selectd的数据
-                    for(var i=0;i<select_index;i++){
-                        datas = datas['id_'+scope.area[i]][scope.config['childrens_key']];
-                    }
+                    var datas = scope.seleceLength[select_index];
 
                     //选择存在子节点,添加子节点选项
-                    if(typeof datas['id_'+value]=='object' && typeof datas['id_'+value][scope.config['childrens_key']]=="object"){
+                    if(typeof datas['id_'+value]=='object' && typeof datas['id_'+value][scope.main_config['childrens_key']]=="object"){
                         //下一级select的数据
-                        scope.seleceLength[select_index+1] = datas['id_'+value][scope.config['childrens_key']];
+                        scope.seleceLength[select_index+1] = datas['id_'+value][scope.main_config['childrens_key']];
                         //如果设置了默认选择
-                        if(scope.config['empty']===false){
-                            scope.area = scope.area.concat(treeFirst(scope.seleceLength[select_index+1],scope.config['value'],scope.config['childrens_key']));
+                        if(scope.main_config['empty']===false){
+                            scope.area = scope.area.concat(treeFirst(scope.seleceLength[select_index+1],scope.main_config['value'],scope.main_config['childrens_key']));
                         }
-                    //不存在子节点,删除子节点选项
+                        //不存在子节点,删除子节点选项
                     }else {
                         //删除后面的select
                         scope.seleceLength.splice(select_index+1,scope.seleceLength.length-(select_index+1));
@@ -198,51 +288,15 @@
                         scope.area.splice(select_index+1,scope.area.length-(select_index+1));
                     }
                 };
-
-                //监听数据改变
-                scope.$watch(attr[prefixKey('MultilevelMove')], function (value) {
-
-                    //获取数据
-                    var datas = scope.$eval(attr[prefixKey('MultilevelMove')]);
-
-                    //非树状结构转换树状结构
-                    if(scope.config['margin_tree']){
-                        datas = toTree(datas,scope.config['primary_key'],scope.config['parent_key'], scope.config['childrens_key']);
-                    }
-
-                    //将主键设置成key标记
-                    scope.datas =  keyBy(datas,scope.config['value'],scope.config['childrens_key']);
-
-                    //默认选中第一个
-                    if(scope.config['selected'] && !scope.area.length){
-                        scope.area = treeFirst(scope.datas,scope.config['value'],scope.config['childrens_key']);
-                    }
-
-                    //默认显示第一级
-                    scope.seleceLength = [scope.datas];
-
-                    //循环显示后面层级
-                    for (var i=0;i<scope.area.length;i++){
-                        if(typeof scope.seleceLength[i]=='undefined' || typeof scope.seleceLength[i]['id_'+scope.area[i]]=='undefined'){
-                            scope.area.splice(i,scope.area.length-i);
-                            break;
-                        }
-                        if(typeof scope.seleceLength[i]['id_'+scope.area[i]][scope.config['childrens_key']]!='undefined'){
-                            scope.seleceLength[i+1] = scope.seleceLength[i]['id_'+scope.area[i]][scope.config['childrens_key']];
-                        }
-                    }
-                });
-
-            },
-            scope:true
+            }
         };
     }];
 
     //应用模块创建
-    var app =  angular.module('ng'+MODULE_NAME,[]);
+    var app =  angular.module(fengtingxun.getTrueModule(MODULE_NAME,fengtingxun.config.moduleName),[]);
 
     /**
      * 注册自定义命令
      */
-    app.directive(prefixObj(directive));
+    app.directive(fengtingxun.getTrueDirectives(directive));
 })(window,window.angular);

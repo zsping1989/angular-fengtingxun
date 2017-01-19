@@ -50,7 +50,7 @@ $ bower install fengtingxun
 <!-- 引入angluar -->
 <script src="bower_components/angular/angular.min.js"></script>
 <!-- 引入扩展库 -->
-<script src="bower_components/angular-extend/src/angular-fengtingxun.js"></script>
+<script src="bower_components/angular-fengtingxun/dist/angular-fengtingxun.js"></script>
 
 ```
 
