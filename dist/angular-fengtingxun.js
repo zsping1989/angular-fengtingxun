@@ -390,6 +390,8 @@ fengtingxun.getTrueDirectives = function(directives){
             current_page_key:'current_page', //当前页码
             page_parameter:'page', //翻页参数
             last_page_key:'last_page', //最后一页
+            prev_text : '«', //前一页显示
+            next_text : '»', //后一页显示
             page_length:2, //页码长度
             fringe:true, //首尾两端
             ajax:true //ajax翻页
@@ -427,8 +429,9 @@ fengtingxun.getTrueDirectives = function(directives){
                     if(pageNum == scope.data[scope.main_config['current_page_key']] || scope.main_config['ajax']){
                         return '';
                     }
+                    var data_url = scope.data_url || window.location.href; //默认当前页面
                     //返回翻页地址
-                    return setQueStr(scope.data_url,scope.main_config['page_parameter'],pageNum);
+                    return setQueStr(data_url,scope.main_config['page_parameter'],pageNum);
                 };
 
                 /**
@@ -443,8 +446,8 @@ fengtingxun.getTrueDirectives = function(directives){
                     var last_page = scope.lastPage();
                     pageNum = pageNum<1 ? 1 : pageNum; //小于第一页,到第一页
                     pageNum = pageNum>last_page ? last_page : pageNum; //大于最大页码,跳转到最后一页
-                    //当前页码不执行
-                    if(pageNum == scope.data[scope.main_config['current_page_key']]){
+                    //当前页码不执行,没有请求地址不跳转
+                    if(pageNum == scope.data[scope.main_config['current_page_key']] || !scope.data_url){
                         return false;
                     }
                     $http({
@@ -484,8 +487,6 @@ fengtingxun.getTrueDirectives = function(directives){
                     var last_page = scope.lastPage(); //最后一页
                     return last_page==0 || last_page==scope.data[scope.main_config['current_page_key']];
                 };
-
-
             }
         };
 

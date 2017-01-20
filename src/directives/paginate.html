@@ -2,7 +2,7 @@
     <ul class="pagination">
         <li class="{{firstIsDisabled() ? 'disabled' : ''}}">
             <a ng-href="{{ pageUrl(data[main_config['current_page_key']]-1) }}" ng-click="setPage(data[main_config['current_page_key']]-1)" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
+                <span aria-hidden="true">{{ main_config['prev_text'] }}</span>
             </a>
         </li>
         <li ng-if="main_config['fringe']" ng-show="(data[main_config['current_page_key']] || 1)-main_config['page_length']>1">
@@ -22,7 +22,7 @@
         </li>
         <li class="{{lastIsDisabled() ? 'disabled' : ''}}">
             <a ng-href="{{ pageUrl(data[main_config['current_page_key']]+1) }}"  ng-click="setPage(data[main_config['current_page_key']]+1)" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
+                <span aria-hidden="true">{{ main_config['next_text'] }}</span>
             </a>
         </li>
     </ul>
