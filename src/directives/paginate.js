@@ -95,9 +95,37 @@
         };
         return {
             restrict: 'A', //属性
-            templateUrl : '/bower_components/angular-fengtingxun/src/directives/paginate.html',
+            //templateUrl : '/bower_components/angular-fengtingxun/src/directives/paginate.html',
+            template:'<nav aria-label="Page navigation">'+
+            '    <ul class="pagination">'+
+            '        <li class="{{firstIsDisabled() ? \'disabled\' : \'\'}}">'+
+            '            <a ng-href="{{ pageUrl(data[main_config[\'current_page_key\']]-1) }}" ng-click="setPage(data[main_config[\'current_page_key\']]-1)" aria-label="Previous">'+
+            '                <span aria-hidden="true">{{ main_config[\'prev_text\'] }}</span>'+
+            '            </a>'+
+            '        </li>'+
+            '        <li ng-if="main_config[\'fringe\']" ng-show="(data[main_config[\'current_page_key\']] || 1)-main_config[\'page_length\']>1">'+
+            '            <a ng-href="{{ pageUrl(1) }}" ng-click="setPage(1)">1</a>'+
+            '        </li>'+
+            '        <li ng-repeat="value in pageLength" ng-show="(start=data[main_config[\'current_page_key\']]-main_config[\'page_length\'] + value)>0">'+
+            '            <a ng-href="{{ pageUrl(start) }}"  ng-click="setPage(start)">{{data[main_config[\'current_page_key\']]-main_config[\'page_length\'] + value}}</a>'+
+            '        </li>'+
+            '        <li class="active">'+
+            '            <a>{{data[main_config[\'current_page_key\']] || 1}}</a>'+
+            '        </li>'+
+            '        <li ng-repeat="value in pageLength" ng-show="(end=data[main_config[\'current_page_key\']]+value+1)<=(data[main_config[\'last_page_key\']] || lastPage())">'+
+            '            <a ng-href="{{ pageUrl(end) }}"  ng-click="setPage(end)">{{data[main_config[\'current_page_key\']]+value+1}}</a>'+
+            '        </li>'+
+            '        <li ng-if="main_config[\'fringe\']" ng-show="(data[main_config[\'current_page_key\']] || 1)+main_config[\'page_length\']<(data[main_config[\'last_page_key\']] || lastPage())">'+
+            '            <a ng-href="{{ pageUrl(data[main_config[\'last_page_key\']] || lastPage()) }}" ng-click="setPage(data[main_config[\'last_page_key\']] || lastPage())">{{data[main_config[\'last_page_key\']] || lastPage()}}</a>'+
+            '        </li>'+
+            '        <li class="{{lastIsDisabled() ? \'disabled\' : \'\'}}">'+
+            '            <a ng-href="{{ pageUrl(data[main_config[\'current_page_key\']]+1) }}"  ng-click="setPage(data[main_config[\'current_page_key\']]+1)" aria-label="Next">'+
+            '                <span aria-hidden="true">{{ main_config[\'next_text\'] }}</span>'+
+            '            </a>'+
+            '        </li>'+
+            '    </ul>'+
+            '</nav>',
             scope:{data:'='+dataKey,config:'='+configKey,data_url:'='+dataUrlKey},
-            //template:,
             replace:true,
             link: function (scope,element, attr) {
                 //现在使用配置
