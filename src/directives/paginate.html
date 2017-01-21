@@ -14,10 +14,10 @@
         <li class="active">
             <a>{{data[main_config['current_page_key']] || 1}}</a>
         </li>
-        <li ng-repeat="value in pageLength" ng-show="(end=data[main_config['current_page_key']]+value+1)<=(data[main_config['last_page_key']] || lastPage())">
+        <li ng-repeat="value in pageLength" ng-show="(end=data[main_config['current_page_key']]+value+1)<=(data[main_config['last_page_key']] || lastPage()) && end>1">
             <a ng-href="{{ pageUrl(end) }}"  ng-click="setPage(end)">{{data[main_config['current_page_key']]+value+1}}</a>
         </li>
-        <li ng-if="main_config['fringe']" ng-show="(data[main_config['current_page_key']] || 1)+main_config['page_length']<(data[main_config['last_page_key']] || lastPage())">
+        <li ng-if="main_config['fringe']" ng-show="(data[main_config['current_page_key']] || 1)+main_config['page_length']<=(data[main_config['last_page_key']] || lastPage())">
             <a ng-href="{{ pageUrl(data[main_config['last_page_key']] || lastPage()) }}" ng-click="setPage(data[main_config['last_page_key']] || lastPage())">{{data[main_config['last_page_key']] || lastPage()}}</a>
         </li>
         <li class="{{lastIsDisabled() ? 'disabled' : ''}}">

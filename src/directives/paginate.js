@@ -112,10 +112,10 @@
             '        <li class="active">'+
             '            <a>{{data[main_config[\'current_page_key\']] || 1}}</a>'+
             '        </li>'+
-            '        <li ng-repeat="value in pageLength" ng-show="(end=data[main_config[\'current_page_key\']]+value+1)<=(data[main_config[\'last_page_key\']] || lastPage())">'+
+            '        <li ng-repeat="value in pageLength" ng-show="(end=data[main_config[\'current_page_key\']]+value+1)<=(data[main_config[\'last_page_key\']] || lastPage()) && end>1">'+
             '            <a ng-href="{{ pageUrl(end) }}"  ng-click="setPage(end)">{{data[main_config[\'current_page_key\']]+value+1}}</a>'+
             '        </li>'+
-            '        <li ng-if="main_config[\'fringe\']" ng-show="(data[main_config[\'current_page_key\']] || 1)+main_config[\'page_length\']<(data[main_config[\'last_page_key\']] || lastPage())">'+
+            '        <li ng-if="main_config[\'fringe\']" ng-show="(data[main_config[\'current_page_key\']] || 1)+main_config[\'page_length\']<=(data[main_config[\'last_page_key\']] || lastPage())">'+
             '            <a ng-href="{{ pageUrl(data[main_config[\'last_page_key\']] || lastPage()) }}" ng-click="setPage(data[main_config[\'last_page_key\']] || lastPage())">{{data[main_config[\'last_page_key\']] || lastPage()}}</a>'+
             '        </li>'+
             '        <li class="{{lastIsDisabled() ? \'disabled\' : \'\'}}">'+
@@ -140,6 +140,7 @@
                 //变量定义
                 scope.start = 0;
                 scope.end = 0;
+                scope.getPageData=0;
 
                 /**
                  * 翻页地址
@@ -167,21 +168,29 @@
                     //不是ajax请求不执行
                     if(!scope.main_config['ajax']){
                         return false;
-                    }
+                    };
                     var last_page = scope.lastPage();
                     pageNum = pageNum<1 ? 1 : pageNum; //小于第一页,到第一页
                     pageNum = pageNum>last_page ? last_page : pageNum; //大于最大页码,跳转到最后一页
                     //当前页码不执行,没有请求地址不跳转
                     if(pageNum == scope.data[scope.main_config['current_page_key']] || !scope.data_url){
                         return false;
+                    };
+                    //防止重复请求
+                    if(scope.getPageData==pageNum){
+                        return true;
                     }
+                    scope.getPageData = pageNum;
                     $http({
                         method: 'GET',
                         url: setQueStr(scope.data_url,scope.main_config['page_parameter'],pageNum),
                     }).success(function (data) {
                         if(typeof data=='object'){
                             scope.data = data;
-                        }
+                        };
+                        scope.getPageData = 0;
+                    }).error(function (data) {
+                        scope.getPageData = 0;
                     });
                 };
 
