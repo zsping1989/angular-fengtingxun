@@ -20,6 +20,7 @@
 
     //创建控制器
     app.controller('myCtrl',function($scope){
+        dump($scope);
         //联动数据绑定
         $scope.area = [];
 
@@ -164,7 +165,6 @@
         <div ftx-multilevel-move='data1' ng-model="area1" ftx-multilevel-move-config="config1" ></div>
         <br>
         选中数据:{{area1}}
-
     </div>
 </div>
 

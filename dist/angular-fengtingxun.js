@@ -90,8 +90,11 @@ fengtingxun.getTrueDirectives = function(directives){
 
     //应用模块创建
     var app =  angular.module(MODULE_NAME,fengtingxun.getTrueModules([
-        'directive.multilevelMove', //多级联动
-        'directive.paginate' //分页
+        'services.tree', //树状服务
+        'services.url', //url服务
+        'directives.multilevelMove', //多级联动
+        'directives.paginate', //分页
+        'filters.helpers' //辅助方法
     ]));
 
 })(window,window.angular);
@@ -109,8 +112,7 @@ fengtingxun.getTrueDirectives = function(directives){
      * 多级联动
      * @type {*[]}
      */
-    directive.multilevelMove = ['$parse', '$animate', '$compile', function($parse, $animate, $compile) {
-
+    directive.multilevelMove = ['$parse', '$animate', '$compile','tree', function($parse, $animate, $compile,tree) {
         //默认配置
         var config = {
             show : 'name', //多级联动显示字段
@@ -130,74 +132,6 @@ fengtingxun.getTrueDirectives = function(directives){
 
         //配置数据获取KEY
         var configKey = fengtingxun.getDirectiveName('multilevelMoveConfig');
-
-        /**
-         * 将数据某一列作key
-         * @param datas 需要处理的数据
-         * @param key 主键,唯一标示
-         * @param childrens_key 子节点的键
-         * @param prefix 键前缀
-         * @returns {{}}
-         */
-        var keyBy = function (datas,key,childrens_key,prefix){
-            prefix = prefix || 'id_';
-            prefix = prefix+'';//字符串类型
-            childrens_key = typeof childrens_key=="undefined" ? '' : childrens_key;
-            var result = {},item;
-            for (var i in datas){
-                item = datas[i];
-                if(typeof item[childrens_key]=="object" && item[childrens_key].length && childrens_key !=='' ){
-                    item[childrens_key]=keyBy(item[childrens_key],key,childrens_key,prefix);
-                }
-                result[prefix+item[key]] = item;
-            }
-
-            return result;
-        };
-
-        /**
-         * json格式转树状结构
-         * @param   {json}      json数据
-         * @param   {String}    id的字符串
-         * @param   {String}    父id的字符串
-         * @param   {String}    children的字符串
-         * @return  {Array}     数组
-         */
-        var toTree = function (a, idStr, pidStr, chindrenStr){
-            var r = [], hash = {}, id = idStr, pid = pidStr, children = chindrenStr, i = 0, j = 0, len = a.length;
-            for(; i < len; i++){
-                hash[a[i][id]] = a[i];
-            }
-            for(; j < len; j++){
-                var aVal = a[j], hashVP = hash[aVal[pid]];
-                if(hashVP){
-                    !hashVP[children] && (hashVP[children] = []);
-                    hashVP[children].push(aVal);
-                }else{
-                    r.push(aVal);
-                }
-            }
-            return r;
-        };
-
-        var treeFirst = function(datas,value_key,chindrens_key,result){
-            //定义结果
-            if(typeof result == 'undefined'){
-                var result = [];
-            }
-
-            for(var i in datas){
-                if(typeof datas[i][value_key] == 'undefined'){
-                    return ;
-                }
-                result[result.length] = datas[i][value_key] + '';
-                if(typeof datas[i][chindrens_key] == "object"){
-                    treeFirst(datas[i][chindrens_key],value_key,chindrens_key,result);
-                }
-                break;
-            }
-            return result;
-        };
 
         return {
             restrict: 'A', //属性
@@ -237,15 +171,15 @@ fengtingxun.getTrueDirectives = function(directives){
 
                     //非树状结构转换树状结构
                     if(scope.main_config['margin_tree']){
-                        datas = toTree(datas,scope.main_config['primary_key'],scope.main_config['parent_key'], scope.main_config['childrens_key']);
+                        datas = tree.toTree(datas,scope.main_config['primary_key'],scope.main_config['parent_key'], scope.main_config['childrens_key']);
                     }
 
                     //将主键设置成key标记
-                    scope.datas =  keyBy(datas,scope.main_config['value'],scope.main_config['childrens_key']);
+                    scope.datas =  tree.keyBy(datas,scope.main_config['value'],scope.main_config['childrens_key']);
 
                     //默认选中第一个
                     if(scope.main_config['selected'] && !scope.area.length){
-                        scope.area = treeFirst(scope.datas,scope.main_config['value'],scope.main_config['childrens_key']);
+                        scope.area = tree.treeFirst(scope.datas,scope.main_config['value'],scope.main_config['childrens_key']);
                     }
 
                     //默认显示第一级
@@ -279,7 +213,7 @@ fengtingxun.getTrueDirectives = function(directives){
                         scope.seleceLength[select_index+1] = datas['id_'+value][scope.main_config['childrens_key']];
                         //如果设置了默认选择
                         if(scope.main_config['empty']===false){
-                            scope.area = scope.area.concat(treeFirst(scope.seleceLength[select_index+1],scope.main_config['value'],scope.main_config['childrens_key']));
+                            scope.area = scope.area.concat(tree.treeFirst(scope.seleceLength[select_index+1],scope.main_config['value'],scope.main_config['childrens_key']));
                         }
                         //不存在子节点,删除子节点选项
                     }else {
@@ -294,7 +228,9 @@ fengtingxun.getTrueDirectives = function(directives){
     }];
 
     //应用模块创建
-    var app =  angular.module(fengtingxun.getTrueModule('directive.'+MODULE_NAME,fengtingxun.config.moduleName),[]);
+    var app =  angular.module(fengtingxun.getTrueModule('directives.'+MODULE_NAME,fengtingxun.config.moduleName),fengtingxun.getTrueModules([
+        'services.tree' //树状服务
+    ]));
 
     /**
      * 注册自定义命令
@@ -316,62 +252,7 @@ fengtingxun.getTrueDirectives = function(directives){
      * 翻页
      * @type {*[]}
      */
-    directive.paginate = ['$parse', '$animate', '$compile','$http', function($parse, $animate, $compile,$http) {
-
-        var setQueStr = function (url, ref, value) //设置参数值
-        {
-            var str = "";
-            if (url.indexOf('?') != -1)
-                str = url.substr(url.indexOf('?') + 1);
-            else
-                return url + "?" + ref + "=" + value;
-            var returnurl = "";
-            var setparam = "";
-            var arr;
-            var modify = "0";
-
-            if (str.indexOf('&') != -1) {
-                arr = str.split('&');
-
-                for (i in arr) {
-                    if (arr[i].split('=')[0] == ref) {
-                        setparam = value;
-                        modify = "1";
-                    }
-                    else {
-                        setparam = arr[i].split('=')[1];
-                    }
-                    returnurl = returnurl + arr[i].split('=')[0] + "=" + setparam + "&";
-                }
-
-                returnurl = returnurl.substr(0, returnurl.length - 1);
-
-                if (modify == "0")
-                    if (returnurl == str)
-                        returnurl = returnurl + "&" + ref + "=" + value;
-            }
-            else {
-                if (str.indexOf('=') != -1) {
-                    arr = str.split('=');
-
-                    if (arr[0] == ref) {
-                        setparam = value;
-                        modify = "1";
-                    }
-                    else {
-                        setparam = arr[1];
-                    }
-                    returnurl = arr[0] + "=" + setparam;
-                    if (modify == "0")
-                        if (returnurl == str)
-                            returnurl = returnurl + "&" + ref + "=" + value;
-                }
-                else
-                    returnurl = ref + "=" + value;
-            }
-            return url.substr(0, url.indexOf('?')) + "?" + returnurl;
-        };
-
+    directive.paginate = ['$parse', '$animate', '$compile','$http','url', function($parse, $animate, $compile,$http,url) {
         //数据获取KEY
         var dataKey = fengtingxun.getDirectiveName('paginate');
 
@@ -460,7 +341,7 @@ fengtingxun.getTrueDirectives = function(directives){
                     }
                     var data_url = scope.data_url || window.location.href; //默认当前页面
                     //返回翻页地址
-                    return setQueStr(data_url,scope.main_config['page_parameter'],pageNum);
+                    return url.setQueStr(data_url,scope.main_config['page_parameter'],pageNum);
                 };
 
                 /**
@@ -486,7 +367,7 @@ fengtingxun.getTrueDirectives = function(directives){
                     scope.getPageData = pageNum;
                     $http({
                         method: 'GET',
-                        url: setQueStr(scope.data_url,scope.main_config['page_parameter'],pageNum),
+                        url: url.setQueStr(scope.data_url,scope.main_config['page_parameter'],pageNum),
                     }).success(function (data) {
                         if(typeof data=='object'){
                             scope.data = data;
@@ -530,10 +411,359 @@ fengtingxun.getTrueDirectives = function(directives){
     }];
 
     //应用模块创建
-    var app =  angular.module(fengtingxun.getTrueModule('directive.'+MODULE_NAME,fengtingxun.config.moduleName),[]);
+    var app =  angular.module(fengtingxun.getTrueModule('directives.'+MODULE_NAME,fengtingxun.config.moduleName),fengtingxun.getTrueModules([
+        'services.url' //树状服务
+    ]));
 
     /**
      * 注册自定义命令
      */
     app.directive(fengtingxun.getTrueDirectives(directive));
 })(window,window.angular);
+/**
+ * Created by zhangshiping on 2017/1/22.
+ * 辅助方法过滤器
+ */
+(function (window, angular) {
+    'use strict';
+    //定义模块名称
+    var MODULE_NAME = 'helpers';
+
+    //辅助方法对象
+    var helpers = {};
+
+    /**
+     * 字符串截取
+     * @param value
+     * @param limit
+     * @param end
+     */
+    helpers.strLimit = [function () {
+        return function (value, limit, end) {
+            limit = limit || 100;
+            end = end || '...';
+            var _str = value ? String(value) : '';
+            if (_str.length > limit) {
+                return _str.substring(0, limit) + end;
+            }
+            return _str;
+        };
+    }];
+
+
+    /**
+     * 秒钟时间格式
+     * @param s
+     * @returns {*}
+     */
+    helpers.secondFormat = [function(){
+        return function (s) {
+            var t='';
+            if (s > -1) {
+                var hour = Math.floor(s / 3600);
+                var min = Math.floor(s / 60) % 60;
+                var sec = s % 60;
+                var day = parseInt(hour / 24);
+
+                if (day > 0) {
+                    hour = hour - 24 * day;
+                    if (hour < 10) {
+                        t = day + "天 0" + hour + ":";
+                    } else {
+                        t = day + "天 " + hour + ":";
+                    }
+                } else {
+                    if (hour < 10) {
+                        t = '0' + hour + ":";
+                    } else {
+                        t = hour + ":";
+                    }
+                }
+                if (min < 10) {
+                    t += "0";
+                }
+                t += min + ":";
+                if (sec < 10) {
+                    t += "0";
+                }
+                t += sec;
+            }
+            return t;
+        }
+    }];
+
+    /**
+     * 保留几位小数
+     * @param num
+     * @param leng
+     * @returns {string}
+     */
+    helpers.toFixed = [function(){
+        return function (num, leng) {
+            num = Number(num) || 0;
+            return num.toFixed(leng)
+        };
+    }];
+
+    /**
+     * 返回值层级拼接
+     * @param num
+     * @returns {*}
+     */
+    helpers.deep = [function(){
+        return function(num) {
+            var str = '|';
+            for (var i = 1; i < num; ++i) {
+                str += '—';
+            }
+            if (num > 1) {
+                return str + ':';
+            }
+            return '';
+        };
+    }];
+
+
+    /**
+     * 万用辅助函数
+     * @type {*[]}
+     */
+    helpers.F = [function () {
+        return function () {
+            var f = eval(arguments[0]);
+            arguments.splice = [].splice;
+            var p = arguments.splice(1);
+            return f.apply(this, p);
+        };
+    }];
+
+    //应用模块创建
+    var app = angular.module(fengtingxun.getTrueModule('filters.' + MODULE_NAME, fengtingxun.config.moduleName), []);
+    angular.forEach(helpers,function(value,key){
+        app.filter(key,value);
+    });
+})(window, window.angular);
+/**
+ * Created by zhangshiping on 2017/1/22.
+ * 辅助方法过滤器
+ */
+(function (window, angular) {
+    'use strict';
+    //定义模块名称
+    var MODULE_NAME = 'tree';
+
+    /**
+     * 树状结构处理服务
+     * @type {{}}
+     */
+    var service = {};
+
+    service.tree = function(){
+        /**
+         * 数据库表结构数据转换成树状结构
+         * @param a
+         * @param idStr
+         * @param pidStr
+         * @param chindrenStr
+         * @returns {Array}
+         */
+        this.toTree = function (a, idStr, pidStr, chindrenStr){
+            var r = [], hash = {}, id = idStr, pid = pidStr, children = chindrenStr, i = 0, j = 0, len = a.length;
+            for(; i < len; i++){
+                hash[a[i][id]] = a[i];
+            }
+            for(; j < len; j++){
+                var aVal = a[j], hashVP = hash[aVal[pid]];
+                if(hashVP){
+                    !hashVP[children] && (hashVP[children] = []);
+                    hashVP[children].push(aVal);
+                }else{
+                    r.push(aVal);
+                }
+            }
+            return r;
+        };
+
+        /**
+         * 树状结构下的第一级的第一级....
+         * @param datas
+         * @param value_key
+         * @param chindrens_key
+         * @param result
+         * @returns {*}
+         */
+        var treeFirst = function(datas,value_key,chindrens_key,result){
+            //定义结果
+            if(typeof result == 'undefined'){
+                var result = [];
+            }
+
+            for(var i in datas){
+                if(typeof datas[i][value_key] == 'undefined'){
+                    return ;
+                }
+                result[result.length] = datas[i][value_key] + '';
+                if(typeof datas[i][chindrens_key] == "object"){
+                    treeFirst(datas[i][chindrens_key],value_key,chindrens_key,result);
+                }
+                break;
+            }
+            return result;
+        };
+        this.treeFirst = treeFirst;
+        /**
+         * 将数据某一列作key
+         * @param datas 需要处理的数据
+         * @param key 主键,唯一标示
+         * @param childrens_key 子节点的键
+         * @param prefix 键前缀
+         * @returns {{}}
+         */
+        var keyBy = function (datas,key,childrens_key,prefix){
+            prefix = prefix || 'id_';
+            prefix = prefix+'';//字符串类型
+            childrens_key = typeof childrens_key=="undefined" ? '' : childrens_key;
+            var result = {},item;
+            for (var i in datas){
+                item = datas[i];
+                if(typeof item[childrens_key]=="object" && item[childrens_key].length && childrens_key !=='' ){
+                    item[childrens_key]=keyBy(item[childrens_key],key,childrens_key,prefix);
+                }
+                result[prefix+item[key]] = item;
+            }
+
+            return result;
+        };
+        this.keyBy = keyBy;
+
+    };
+
+    //应用模块创建
+    var app = angular.module(fengtingxun.getTrueModule('services.' + MODULE_NAME, fengtingxun.config.moduleName), []);
+    angular.forEach(service,function(value,key){
+        app.service(key,value);
+    });
+})(window, window.angular);
+/**
+ * Created by zhangshiping on 2017/1/22.
+ * 辅助方法过滤器
+ */
+(function (window, angular) {
+    'use strict';
+    //定义模块名称
+    var MODULE_NAME = 'url';
+
+    /**
+     * url处理服务
+     * @type {{}}
+     */
+    var service = {};
+
+    service.url = function(){
+        /**
+         * url设置参数
+         * @param url
+         * @param ref
+         * @param value
+         * @returns {string}
+         */
+        this.setQueStr = function (url, ref, value){
+            var str = "";
+            if (url.indexOf('?') != -1)
+                str = url.substr(url.indexOf('?') + 1);
+            else
+                return url + "?" + ref + "=" + value;
+            var returnurl = "";
+            var setparam = "";
+            var arr;
+            var modify = "0";
+
+            if (str.indexOf('&') != -1) {
+                arr = str.split('&');
+
+                for (i in arr) {
+                    if (arr[i].split('=')[0] == ref) {
+                        setparam = value;
+                        modify = "1";
+                    }
+                    else {
+                        setparam = arr[i].split('=')[1];
+                    }
+                    returnurl = returnurl + arr[i].split('=')[0] + "=" + setparam + "&";
+                }
+
+                returnurl = returnurl.substr(0, returnurl.length - 1);
+
+                if (modify == "0")
+                    if (returnurl == str)
+                        returnurl = returnurl + "&" + ref + "=" + value;
+            }
+            else {
+                if (str.indexOf('=') != -1) {
+                    arr = str.split('=');
+
+                    if (arr[0] == ref) {
+                        setparam = value;
+                        modify = "1";
+                    }
+                    else {
+                        setparam = arr[1];
+                    }
+                    returnurl = arr[0] + "=" + setparam;
+                    if (modify == "0")
+                        if (returnurl == str)
+                            returnurl = returnurl + "&" + ref + "=" + value;
+                }
+                else
+                    returnurl = ref + "=" + value;
+            }
+            return url.substr(0, url.indexOf('?')) + "?" + returnurl;
+        };
+
+        /**
+         * 获取路径参数
+         * @param key
+         * @param url
+         * @returns {*}
+         */
+        this.parseURL = function (key, url) {
+            var a = document.createElement('a');
+            a.href = url || window.location.href;
+            var res = {
+                source: url,
+                protocol: a.protocol.replace(':', ''),
+                host: a.hostname,
+                port: a.port,
+                query: a.search,
+                params: (function () {
+                    var ret = {},
+                        seg = a.search.replace(/^\?/, '').split('&'),
+                        len = seg.length, i = 0, s;
+                    for (; i < len; i++) {
+                        if (!seg[i]) {
+                            continue;
+                        }
+                        s = seg[i].split('=');
+                        ret[s[0]] = s[1];
+                    }
+                    return ret;
+                })(),
+                file: (a.pathname.match(/\/([^\/?#]+)$/i) || [, ''])[1],
+                hash: a.hash.replace('#', ''),
+                path: a.pathname.replace(/^([^\/])/, '/$1'),
+                relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [, ''])[1],
+                segments: a.pathname.replace(/^\//, '').split('/')
+            };
+            if (key) {
+                return res[key];
+            }
+            return res;
+        }
+    };
+
+    //应用模块创建
+    var app = angular.module(fengtingxun.getTrueModule('services.' + MODULE_NAME, fengtingxun.config.moduleName), []);
+    angular.forEach(service,function(value,key){
+        app.service(key,value);
+    });
+})(window, window.angular);

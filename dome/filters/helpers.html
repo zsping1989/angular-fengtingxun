@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angular学习</title>
+    <link rel="stylesheet" href="../../../bootstrap/dist/css/bootstrap.css">
+</head>
+<body  >
+<script src="../../../angular/angular.min.js"></script>
+<script src="../../dist/angular-fengtingxun.js"></script>
+<script>
+    /* 调试打印 */
+    function dump(){
+        for (var i = 0; i < arguments.length; ++i) {
+            console.log(arguments[i]);
+        }
+    }
+
+    //创建应用
+    var app = angular.module('app',['ngFengTingXun']);
+
+    //创建控制器
+    app.controller('myCtrl',function($scope){
+        $scope.sting = '123456789';
+    });
+
+</script>
+<div ng-app="app">
+    <div ng-controller="myCtrl">
+        <div class="row">
+            <div class="col-lg-12">
+                字符串截取过滤器:{{sting | strLimit : 3:'...'}}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

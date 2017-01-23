@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angular学习</title>
+    <link rel="stylesheet" href="../../../bootstrap/dist/css/bootstrap.css">
+</head>
+<body  >
+<script src="../../../angular/angular.min.js"></script>
+<script src="../../dist/angular-fengtingxun.js"></script>
+<script>
+    /* 调试打印 */
+    function dump(){
+        for (var i = 0; i < arguments.length; ++i) {
+            console.log(arguments[i]);
+        }
+    }
+
+    //创建应用
+    var app = angular.module('app',['ngFengTingXun']);
+
+    //创建控制器
+    app.controller('myCtrl',function($scope,tree){
+        dump(tree);
+        //数据库表结构数据
+        $scope.data = [
+            {
+                "id":2,
+                "name":'四川',
+                "parent_id":1
+            },
+            {
+                "id":3,
+                "name":'湖南',
+                "parent_id":1
+            },
+            {
+                "id":4,
+                "name":'成都',
+                "parent_id":2
+            },
+            {
+                "id":5,
+                "name":'资阳',
+                "parent_id":2
+            },
+            {
+                "id":6,
+                "name":'雁江区',
+                "parent_id":5
+            },
+            {
+                "id":7,
+                "name":'丰裕镇',
+                "parent_id":5
+            }
+        ];
+        $scope.data = tree.toTree($scope.data,'id','parent_id','childrens');
+    });
+
+</script>
+<div ng-app="app">
+    <div ng-controller="myCtrl">
+        <div class="row">
+            <div class="col-lg-12">
+                数据库表结构数据转树状结构数据:{{ data }}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

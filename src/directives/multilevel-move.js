@@ -12,8 +12,7 @@
      * 多级联动
      * @type {*[]}
      */
-    directive.multilevelMove = ['$parse', '$animate', '$compile', function($parse, $animate, $compile) {
-
+    directive.multilevelMove = ['$parse', '$animate', '$compile','tree', function($parse, $animate, $compile,tree) {
         //默认配置
         var config = {
             show : 'name', //多级联动显示字段
@@ -33,74 +32,6 @@
 
         //配置数据获取KEY
         var configKey = fengtingxun.getDirectiveName('multilevelMoveConfig');
-
-        /**
-         * 将数据某一列作key
-         * @param datas 需要处理的数据
-         * @param key 主键,唯一标示
-         * @param childrens_key 子节点的键
-         * @param prefix 键前缀
-         * @returns {{}}
-         */
-        var keyBy = function (datas,key,childrens_key,prefix){
-            prefix = prefix || 'id_';
-            prefix = prefix+'';//字符串类型
-            childrens_key = typeof childrens_key=="undefined" ? '' : childrens_key;
-            var result = {},item;
-            for (var i in datas){
-                item = datas[i];
-                if(typeof item[childrens_key]=="object" && item[childrens_key].length && childrens_key !=='' ){
-                    item[childrens_key]=keyBy(item[childrens_key],key,childrens_key,prefix);
-                }
-                result[prefix+item[key]] = item;
-            }
-
-            return result;
-        };
-
-        /**
-         * json格式转树状结构
-         * @param   {json}      json数据
-         * @param   {String}    id的字符串
-         * @param   {String}    父id的字符串
-         * @param   {String}    children的字符串
-         * @return  {Array}     数组
-         */
-        var toTree = function (a, idStr, pidStr, chindrenStr){
-            var r = [], hash = {}, id = idStr, pid = pidStr, children = chindrenStr, i = 0, j = 0, len = a.length;
-            for(; i < len; i++){
-                hash[a[i][id]] = a[i];
-            }
-            for(; j < len; j++){
-                var aVal = a[j], hashVP = hash[aVal[pid]];
-                if(hashVP){
-                    !hashVP[children] && (hashVP[children] = []);
-                    hashVP[children].push(aVal);
-                }else{
-                    r.push(aVal);
-                }
-            }
-            return r;
-        };
-
-        var treeFirst = function(datas,value_key,chindrens_key,result){
-            //定义结果
-            if(typeof result == 'undefined'){
-                var result = [];
-            }
-
-            for(var i in datas){
-                if(typeof datas[i][value_key] == 'undefined'){
-                    return ;
-                }
-                result[result.length] = datas[i][value_key] + '';
-                if(typeof datas[i][chindrens_key] == "object"){
-                    treeFirst(datas[i][chindrens_key],value_key,chindrens_key,result);
-                }
-                break;
-            }
-            return result;
-        };
 
         return {
             restrict: 'A', //属性
@@ -140,15 +71,15 @@
 
                     //非树状结构转换树状结构
                     if(scope.main_config['margin_tree']){
-                        datas = toTree(datas,scope.main_config['primary_key'],scope.main_config['parent_key'], scope.main_config['childrens_key']);
+                        datas = tree.toTree(datas,scope.main_config['primary_key'],scope.main_config['parent_key'], scope.main_config['childrens_key']);
                     }
 
                     //将主键设置成key标记
-                    scope.datas =  keyBy(datas,scope.main_config['value'],scope.main_config['childrens_key']);
+                    scope.datas =  tree.keyBy(datas,scope.main_config['value'],scope.main_config['childrens_key']);
 
                     //默认选中第一个
                     if(scope.main_config['selected'] && !scope.area.length){
-                        scope.area = treeFirst(scope.datas,scope.main_config['value'],scope.main_config['childrens_key']);
+                        scope.area = tree.treeFirst(scope.datas,scope.main_config['value'],scope.main_config['childrens_key']);
                     }
 
                     //默认显示第一级
@@ -182,7 +113,7 @@
                         scope.seleceLength[select_index+1] = datas['id_'+value][scope.main_config['childrens_key']];
                         //如果设置了默认选择
                         if(scope.main_config['empty']===false){
-                            scope.area = scope.area.concat(treeFirst(scope.seleceLength[select_index+1],scope.main_config['value'],scope.main_config['childrens_key']));
+                            scope.area = scope.area.concat(tree.treeFirst(scope.seleceLength[select_index+1],scope.main_config['value'],scope.main_config['childrens_key']));
                         }
                         //不存在子节点,删除子节点选项
                     }else {
@@ -197,7 +128,9 @@
     }];
 
     //应用模块创建
-    var app =  angular.module(fengtingxun.getTrueModule('directive.'+MODULE_NAME,fengtingxun.config.moduleName),[]);
+    var app =  angular.module(fengtingxun.getTrueModule('directives.'+MODULE_NAME,fengtingxun.config.moduleName),fengtingxun.getTrueModules([
+        'services.tree' //树状服务
+    ]));
 
     /**
      * 注册自定义命令

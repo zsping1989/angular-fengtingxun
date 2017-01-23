@@ -13,62 +13,7 @@
      * 翻页
      * @type {*[]}
      */
-    directive.paginate = ['$parse', '$animate', '$compile','$http', function($parse, $animate, $compile,$http) {
-
-        var setQueStr = function (url, ref, value) //设置参数值
-        {
-            var str = "";
-            if (url.indexOf('?') != -1)
-                str = url.substr(url.indexOf('?') + 1);
-            else
-                return url + "?" + ref + "=" + value;
-            var returnurl = "";
-            var setparam = "";
-            var arr;
-            var modify = "0";
-
-            if (str.indexOf('&') != -1) {
-                arr = str.split('&');
-
-                for (i in arr) {
-                    if (arr[i].split('=')[0] == ref) {
-                        setparam = value;
-                        modify = "1";
-                    }
-                    else {
-                        setparam = arr[i].split('=')[1];
-                    }
-                    returnurl = returnurl + arr[i].split('=')[0] + "=" + setparam + "&";
-                }
-
-                returnurl = returnurl.substr(0, returnurl.length - 1);
-
-                if (modify == "0")
-                    if (returnurl == str)
-                        returnurl = returnurl + "&" + ref + "=" + value;
-            }
-            else {
-                if (str.indexOf('=') != -1) {
-                    arr = str.split('=');
-
-                    if (arr[0] == ref) {
-                        setparam = value;
-                        modify = "1";
-                    }
-                    else {
-                        setparam = arr[1];
-                    }
-                    returnurl = arr[0] + "=" + setparam;
-                    if (modify == "0")
-                        if (returnurl == str)
-                            returnurl = returnurl + "&" + ref + "=" + value;
-                }
-                else
-                    returnurl = ref + "=" + value;
-            }
-            return url.substr(0, url.indexOf('?')) + "?" + returnurl;
-        };
-
+    directive.paginate = ['$parse', '$animate', '$compile','$http','url', function($parse, $animate, $compile,$http,url) {
         //数据获取KEY
         var dataKey = fengtingxun.getDirectiveName('paginate');
 
@@ -157,7 +102,7 @@
                     }
                     var data_url = scope.data_url || window.location.href; //默认当前页面
                     //返回翻页地址
-                    return setQueStr(data_url,scope.main_config['page_parameter'],pageNum);
+                    return url.setQueStr(data_url,scope.main_config['page_parameter'],pageNum);
                 };
 
                 /**
@@ -183,7 +128,7 @@
                     scope.getPageData = pageNum;
                     $http({
                         method: 'GET',
-                        url: setQueStr(scope.data_url,scope.main_config['page_parameter'],pageNum),
+                        url: url.setQueStr(scope.data_url,scope.main_config['page_parameter'],pageNum),
                     }).success(function (data) {
                         if(typeof data=='object'){
                             scope.data = data;
@@ -227,7 +172,9 @@
     }];
 
     //应用模块创建
-    var app =  angular.module(fengtingxun.getTrueModule('directive.'+MODULE_NAME,fengtingxun.config.moduleName),[]);
+    var app =  angular.module(fengtingxun.getTrueModule('directives.'+MODULE_NAME,fengtingxun.config.moduleName),fengtingxun.getTrueModules([
+        'services.url' //树状服务
+    ]));
 
     /**
      * 注册自定义命令
