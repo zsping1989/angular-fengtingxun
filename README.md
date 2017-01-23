@@ -58,3 +58,5 @@ $ bower install fengtingxun
 
 1.-[多级联动(省-市-区)](./wiki/directives/multilevel-move.md)
 
+2.-[分页(支持ajax翻页+普通跳转翻页)](./wiki/directives/paginate.md)
+
