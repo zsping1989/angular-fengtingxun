@@ -21,18 +21,47 @@
 
     //创建控制器
     app.controller('myCtrl',function($scope){
+        $scope.data = [
+            {'name':'张三','age':20},
+            {'name':'李四','age':20}
+        ];
         $scope.sting = '123456789';
+        $scope.alphabet = 'abcd';
+        $scope.now = new Date();
     });
 
 </script>
 <div ng-app="app">
-    <div ng-controller="myCtrl">
+    <div ng-controller="myCtrl" class="container">
         <div class="row">
             <div class="col-lg-12">
-                字符串截取过滤器:{{sting | strLimit : 3:'...'}}
+                <h2>
+                    系统过滤器
+                </h2>
+                json过滤器-json(input):{{data | json}}<br>
+
+                货币过滤器-currency(amount:金额, currencySymbol:标识符, fractionSize:保留几位小数):{{123456 | currency : '¥' :2}}<br>
+
+                字母大写过滤器-uppercase(input):{{alphabet | uppercase }}<br>
+
+                字母小写过滤器-lowercase(input):{{alphabet | uppercase | lowercase}}<br>
+
+                字符串截取过滤器-limitTo(input, limit, begin):{{sting | limitTo : 2 : 3}}<br>
+
+                数字过滤器-number(number, fractionSize:保留几位小数):{{123456 | number : 2}}<br>
+
+                日期过滤器-date(date, format, timezone):{{now | date : 'yyyy-MM-dd HH:mm:ss' : '+0800'}}<br>
+
             </div>
         </div>
-
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>
+                    自定义过滤器
+                </h2>
+                字符串截取过滤器-<code>strLimit(input,limit:长度,end:结尾字符)</code>:{{sting | strLimit : 3:'...'}}<br>
+            </div>
+        </div>
     </div>
 </div>
 
