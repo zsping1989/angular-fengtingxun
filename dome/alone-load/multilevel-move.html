@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angular学习</title>
+</head>
+<body  >
+<script src="../../../requirejs/require.js" data-main="./main.js"></script>
+<div>
+    <div ng-controller="myCtrl">
+        <div ftx-multilevel-move='data' ng-model="area" ftx-multilevel-move-config="config" ></div>
+        <br>
+        数据源:{{data}}
+        <br>
+        选中数据:{{area}}
+        <button type="button" ng-click="change()">改变数据源</button>
+        <br><br>
+        <div ftx-multilevel-move='data1' ng-model="area1" ftx-multilevel-move-config="config1" ></div>
+        <br>
+        选中数据:{{area1}}
+    </div>
+</div>
+
+</body>
+</html>

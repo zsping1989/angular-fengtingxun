@@ -10,8 +10,35 @@ var fengtingxun = {
     config: {
         moduleName: 'FengTingXun', //模块名称
         directivePrefix: 'ftx' //指令前缀
+    },
+    modules:{
+        paths: {
+            'tree':'/bower_components/angular-fengtingxun/src/services/tree',
+            'url':'/bower_components/angular-fengtingxun/src/services/url',
+            'helpers':'/bower_components/angular-fengtingxun/src/filters/helpers',
+            'multilevelMove':'/bower_components/angular-fengtingxun/src/directives/multilevel-move',
+            'paginate':'/bower_components/angular-fengtingxun/src/directives/paginate'
+        },
+        shim: {
+            'tree':{
+                deps: ['angular','fengtingxun']
+            },
+            'url':{
+                deps: ['angular','fengtingxun']
+            },
+            'helpers':{
+                deps: ['angular','fengtingxun']
+            },
+            'multilevelMove':{
+                deps: ['angular','tree','fengtingxun']
+            },
+            'paginate':{
+                deps: ['angular','url','fengtingxun']
+            }
+        }
     }
 };
+
 
 /**
  * 获取模块名称
@@ -80,3 +107,9 @@ fengtingxun.getTrueDirectives = function(directives){
     }
     return result;
 };
+if ( typeof define === "function" && define.amd && typeof requirejs === "function" ) {
+    require.config(fengtingxun.modules);
+    define('fengtingxun',[],function(){
+        return fengtingxun;
+    });
+}

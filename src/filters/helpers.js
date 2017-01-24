@@ -34,9 +34,9 @@
      * @param s
      * @returns {*}
      */
-    helpers.secondFormat = [function(){
+    helpers.secondFormat = [function () {
         return function (s) {
-            var t='';
+            var t = '';
             if (s > -1) {
                 var hour = Math.floor(s / 3600);
                 var min = Math.floor(s / 60) % 60;
@@ -76,7 +76,7 @@
      * @param leng
      * @returns {string}
      */
-    helpers.toFixed = [function(){
+    helpers.toFixed = [function () {
         return function (num, leng) {
             num = Number(num) || 0;
             return num.toFixed(leng)
@@ -88,8 +88,8 @@
      * @param num
      * @returns {*}
      */
-    helpers.deep = [function(){
-        return function(num) {
+    helpers.deep = [function () {
+        return function (num) {
             var str = '|';
             for (var i = 1; i < num; ++i) {
                 str += '—';
@@ -115,9 +115,23 @@
         };
     }];
 
+    /**
+     * 调用对象自身方法
+     * @param obj
+     * @param fn
+     * @returns {*}
+     */
+    helpers.call = [function () {
+         return function (obj,fn) {
+            arguments.splice = [].splice;
+            var p = arguments.splice(2);
+            return obj[fn].apply(obj, p);
+        };
+    }];
+
     //应用模块创建
     var app = angular.module(fengtingxun.getTrueModule('filters.' + MODULE_NAME, fengtingxun.config.moduleName), []);
-    angular.forEach(helpers,function(value,key){
-        app.filter(key,value);
+    angular.forEach(helpers, function (value, key) {
+        app.filter(key, value);
     });
 })(window, window.angular);

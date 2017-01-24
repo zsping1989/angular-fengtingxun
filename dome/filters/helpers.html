@@ -38,19 +38,19 @@
                 <h2>
                     系统过滤器
                 </h2>
-                json过滤器-json(input):{{data | json}}<br>
+                json过滤器-<code>json(input)</code>:{{data | json}}<br>
 
-                货币过滤器-currency(amount:金额, currencySymbol:标识符, fractionSize:保留几位小数):{{123456 | currency : '¥' :2}}<br>
+                货币过滤器-<code>currency(amount:金额, currencySymbol:标识符, fractionSize:保留几位小数)</code>:{{123456 | currency : '¥' :2}}<br>
 
-                字母大写过滤器-uppercase(input):{{alphabet | uppercase }}<br>
+                字母大写过滤器-<code>uppercase(input)</code>:{{alphabet | uppercase }}<br>
 
-                字母小写过滤器-lowercase(input):{{alphabet | uppercase | lowercase}}<br>
+                字母小写过滤器-<code>lowercase(input)</code>:{{alphabet | uppercase | lowercase}}<br>
 
-                字符串截取过滤器-limitTo(input, limit, begin):{{sting | limitTo : 2 : 3}}<br>
+                字符串截取过滤器-<code>limitTo(input, limit, begin)</code>:{{sting | limitTo : 2 : 3}}<br>
 
-                数字过滤器-number(number, fractionSize:保留几位小数):{{123456 | number : 2}}<br>
+                数字过滤器-<code>number(number, fractionSize:保留几位小数)</code>:{{123456 | number : 2}}<br>
 
-                日期过滤器-date(date, format, timezone):{{now | date : 'yyyy-MM-dd HH:mm:ss' : '+0800'}}<br>
+                日期过滤器-<code>date(date, format, timezone)</code>:{{now | date : 'yyyy-MM-dd HH:mm:ss' : '+0800'}}<br>
 
             </div>
         </div>
@@ -60,6 +60,17 @@
                     自定义过滤器
                 </h2>
                 字符串截取过滤器-<code>strLimit(input,limit:长度,end:结尾字符)</code>:{{sting | strLimit : 3:'...'}}<br>
+
+                秒钟格式化过滤器-<code>secondFormat(second)</code>:{{456211 | secondFormat}}<br>
+
+                保留小数点后几位过滤器-<code>toFixed(input,leng:长度)</code>:{{5.86665 | toFixed : 3}}<br>
+
+                树状结构层级显示前缀过滤器-<code>deep(input)</code>:{{3 | deep}}<br>
+
+                全局函数调用过滤器-<code>F(function:函数名称,argument,...:参数)</code>:{{'Math.round' | F : 0.6}}<br>
+
+                对象自己方法调用过滤器-<code>call(obj:对象自己,fn:方法,argument,...:参数)</code>:{{'abcdefg' | call : 'substring' : 1 : 2}}<br>
+
             </div>
         </div>
     </div>
