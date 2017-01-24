@@ -2,7 +2,7 @@
  * Created by zhangshiping on 2017/1/22.
  * 辅助方法过滤器
  */
-(function (window, angular) {
+(function (window) {
     'use strict';
     //定义模块名称
     var MODULE_NAME = 'url';
@@ -115,9 +115,18 @@
         }
     };
 
-    //应用模块创建
-    var app = angular.module(fengtingxun.getTrueModule('services.' + MODULE_NAME, fengtingxun.config.moduleName), []);
-    angular.forEach(service,function(value,key){
-        app.service(key,value);
-    });
-})(window, window.angular);
+    var init = function(angular,fengtingxun){
+        //应用模块创建
+        var app = angular.module(fengtingxun.getTrueModule('services.' + MODULE_NAME, fengtingxun.config.moduleName), []);
+        angular.forEach(service,function(value,key){
+            app.service(key,value);
+        });
+    };
+    if ( typeof define === "function" && define.amd && typeof requirejs === "function" ) {
+        define(['angular','fengtingxun'],function(angular,fengtingxun){
+            init(angular,fengtingxun);
+        });
+    }else {
+        init(window.angular,window.fengtingxun);
+    }
+})(window);

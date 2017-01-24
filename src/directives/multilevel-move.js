@@ -1,7 +1,7 @@
 /**
  * Created by zhangshiping on 2017/1/8.
  */
-(function(window,angular){'use strict';
+(function(window){'use strict';
     //定义模块名称
     var MODULE_NAME = 'multilevelMove';
 
@@ -126,14 +126,23 @@
             }
         };
     }];
+    var init = function(angular,fengtingxun){
+        //应用模块创建
+        var app =  angular.module(fengtingxun.getTrueModule('directives.'+MODULE_NAME,fengtingxun.config.moduleName),fengtingxun.getTrueModules([
+            'services.tree' //树状服务
+        ]));
 
-    //应用模块创建
-    var app =  angular.module(fengtingxun.getTrueModule('directives.'+MODULE_NAME,fengtingxun.config.moduleName),fengtingxun.getTrueModules([
-        'services.tree' //树状服务
-    ]));
+        /**
+         * 注册自定义命令
+         */
+        app.directive(fengtingxun.getTrueDirectives(directive));
+    };
+    if ( typeof define === "function" && define.amd && typeof requirejs === "function" ) {
+        define(['angular','fengtingxun',fengtingxun.getTrueModule('services.tree',fengtingxun.config.moduleName)],function(angular,fengtingxun){
+            init(angular,fengtingxun);
+        });
+    }else {
+        init(window.angular,window.fengtingxun);
+    }
 
-    /**
-     * 注册自定义命令
-     */
-    app.directive(fengtingxun.getTrueDirectives(directive));
-})(window,window.angular);
+})(window);

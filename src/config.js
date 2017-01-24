@@ -9,34 +9,17 @@
 var fengtingxun = {
     config: {
         moduleName: 'FengTingXun', //模块名称
-        directivePrefix: 'ftx' //指令前缀
+        directivePrefix: 'ftx', //指令前缀
+        path:'/bower_components/angular-fengtingxun/src' //模块包路径
     },
-    modules:{
-        paths: {
-            'tree':'/bower_components/angular-fengtingxun/src/services/tree',
-            'url':'/bower_components/angular-fengtingxun/src/services/url',
-            'helpers':'/bower_components/angular-fengtingxun/src/filters/helpers',
-            'multilevelMove':'/bower_components/angular-fengtingxun/src/directives/multilevel-move',
-            'paginate':'/bower_components/angular-fengtingxun/src/directives/paginate'
-        },
-        shim: {
-            'tree':{
-                deps: ['angular','fengtingxun']
-            },
-            'url':{
-                deps: ['angular','fengtingxun']
-            },
-            'helpers':{
-                deps: ['angular','fengtingxun']
-            },
-            'multilevelMove':{
-                deps: ['angular','tree','fengtingxun']
-            },
-            'paginate':{
-                deps: ['angular','url','fengtingxun']
-            }
-        }
-    }
+    modules:[
+        'services.tree', //树状服务
+        'services.url', //url服务
+        'directives.multilevelMove', //多级联动
+        'directives.paginate', //分页
+        'filters.helpers' //辅助方法
+    ],
+    allLoad:false
 };
 
 
@@ -107,8 +90,19 @@ fengtingxun.getTrueDirectives = function(directives){
     }
     return result;
 };
+fengtingxun.getTruePaths = function(){
+    var result = {
+        paths:{},
+        shim:{}
+    };
+    for (var i in fengtingxun.modules){
+        result.paths[fengtingxun.getTrueModule(fengtingxun.modules[i],fengtingxun.config.moduleName)] =
+            fengtingxun.config.path+'/'+fengtingxun.modules[i].replace(/(.)(?=[A-Z])/g,'$1'+'-').replace(/\./g,'/').toLowerCase();
+    }
+    return result;
+}
 if ( typeof define === "function" && define.amd && typeof requirejs === "function" ) {
-    require.config(fengtingxun.modules);
+    requirejs.config(fengtingxun.getTruePaths());
     define('fengtingxun',[],function(){
         return fengtingxun;
     });
